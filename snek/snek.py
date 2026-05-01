@@ -3,16 +3,15 @@ import random as r
 
 pix = 50
 col_a = 1
-fps = 20
+fps = 4
 is_m_a= False
 one = 1
 
-a_i = py.image.load("C:/Users/Евгений/Desktop/Новая папка (2)/i.jpeg")
-a_a = py.image.load("C:/Users/Евгений/Desktop/Новая папка (2)/apple.png")
-a_ff_a = py.image.load("C:/Users/Евгений/Desktop/Новая папка (2)/fastfood appie.png")
-a_mk_a = py.image.load("C:/Users/Евгений/Desktop/Новая папка (2)/mini apple.png")
-a_n_a = py.image.load("C:/Users/Евгений/Desktop/Новая папка (2)/nosing apple.png")
-a_m_a = py.image.load("C:/Users/Евгений/Desktop/Новая папка (2)/much apple.png")
+a_a = py.image.load("apple.png")
+a_ff_a = py.image.load("fastfood appie.png")
+a_mk_a = py.image.load("mini apple.png")
+a_n_a = py.image.load("nosing apple.png")
+a_m_a = py.image.load("much apple.png")
 a_a = py.transform.scale(a_a, (pix, pix))
 a_ff_a = py.transform.scale(a_ff_a, (pix, pix))
 a_mk_a = py.transform.scale(a_mk_a, (pix, pix))
@@ -32,12 +31,13 @@ dx = 0
 dy = 0
 FPS = py.time.Clock()
 s = [[5 * pix, 5 * pix], [5 *pix, 4 * pix], [x, y]]
+apple_cord = [[xa, ya]]
 
 col = py.Color(0, 170, 176)
 py.init()
 # a_i = py.transform.scale(a_i,(res, res2))
-apple =  r.choice([a_a, a_ff_a, a_mk_a,])
-apple_s =  r.choice([a_m_a])
+apple =  r.choice([a_a, a_ff_a, a_mk_a, a_m_a])
+# apple_s =  r.choice([a_m_a])
 
 scren = py.display.set_mode([res1, res2])
 while True:
@@ -65,36 +65,49 @@ while True:
     s.append([x,y])
     print(s)
     if x == xa and y == ya:
+        for i in range(len(apple_cord)):
+            if apple_cord[i][0] == xa and apple_cord[i][1] == ya:
+                apple_cord.pop(i)
+                break
         # опредиляем яблоко
-        for i in range(one):
-            if apple == a_a:
-                # перемещаем яблоко
+        if apple == a_a:
+            # перемещаем яблоко
+            for i in range(one):
                 xa = r.randint(0, (res1 // pix - 1)) * pix
                 ya = r.randint(0, (res2 // pix - 1)) * pix
-                apple =  r.choice([a_a, a_ff_a, a_mk_a, a_n_a, a_m_a])
-            elif apple == a_ff_a:
+                apple_cord.append([xa, ya])
+            apple =  r.choice([a_a, a_ff_a, a_mk_a, a_n_a, a_m_a])
+        elif apple == a_ff_a:
+            for i in range(one):
                 xa = r.randint(0, (res1 // pix - 1)) * pix
                 ya = r.randint(0, (res2 // pix - 1)) * pix
-                s.append([x,y])
-                apple =  r.choice([a_a, a_ff_a, a_m_a]) 
-            elif apple == a_mk_a:
+                apple_cord.append([xa, ya])
+            s.append([x,y])
+            apple =  r.choice([a_a, a_ff_a, a_m_a]) 
+        elif apple == a_mk_a:
+            for i in range(one):
                 xa = r.randint(0, (res1 // pix - 1)) * pix
                 ya = r.randint(0, (res2 // pix - 1)) * pix
-                s.pop(0)
-                apple =  r.choice([a_ff_a, a_mk_a, a_m_a]) 
-            elif apple == a_n_a:
+                apple_cord.append([xa, ya])
+            s.pop(0)
+            apple =  r.choice([a_ff_a, a_mk_a, a_m_a]) 
+        elif apple == a_n_a:
+            for i in range(one):
                 xa = r.randint(0, (res1 // pix - 1)) * pix
                 ya = r.randint(0, (res2 // pix - 1)) * pix
-                s.pop(0)
-                apple =  r.choice([a_a, a_ff_a, a_mk_a, a_n_a, a_m_a])
-            elif apple == a_m_a:
+                apple_cord.append([xa, ya])
+            s.pop(0)
+            apple =  r.choice([a_a, a_ff_a, a_mk_a, a_n_a, a_m_a])
+        elif apple == a_m_a:
+            for i in range(one):
                 xa = r.randint(0, (res1 // pix - 1)) * pix
                 ya = r.randint(0, (res2 // pix - 1)) * pix
-                is_m_a = True
-                one += 1
-                apple =  r.choice([a_a, a_ff_a, a_mk_a, a_n_a, a_m_a])
-            else:
-                s.pop(0)
+                apple_cord.append([xa, ya])
+            is_m_a = True
+            one += 1
+            apple =  r.choice([a_a, a_ff_a, a_mk_a, a_n_a, a_m_a])
+    else:
+        s.pop(0)
     # if x == xas and y == yas:
     #     fps =- 3
     #     xas = r.randint(0, (res1 // pix - 1)) * pix
@@ -104,9 +117,10 @@ while True:
     #     s.pop(0)
     for x, y in s:
         py.draw.rect(scren, col, (x, y, pix, pix))
-        FPS.tick(fps)
+    FPS.tick(fps)
     # рисуем яблоки
-    scren.blit(apple, (xa, ya))
+    for i in range(len(apple_cord)):
+        scren.blit(apple, (apple_cord[i][0], apple_cord[i][1]))
     # scren.blit(a_i,(0,0))
     for event in py.event.get():
         if event.type == py.QUIT:
